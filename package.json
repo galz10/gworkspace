@@ -4,6 +4,7 @@
   "description": "Native Google Workspace CLI (no MCP)",
   "type": "module",
   "bin": {
+    "gw": "dist/index.js",
     "gworkspace": "dist/index.js"
   },
   "scripts": {

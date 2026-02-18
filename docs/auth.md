@@ -1,6 +1,6 @@
 # Auth Flow
 
-`gworkspace auth login` uses an MCP-style browser OAuth loop:
+`gw auth login` uses an MCP-style browser OAuth loop:
 
 1. Start a localhost callback server on a random free port.
 2. Generate Google OAuth URL with the configured scopes.
@@ -16,7 +16,7 @@
 Override credentials path with:
 
 ```bash
-gworkspace auth login --credentials /path/to/credentials.json
+gw auth login --credentials /path/to/credentials.json
 ```
 
 Or env var:
@@ -36,8 +36,8 @@ If new scopes are added (for example Chat read-only scopes), your existing token
 Run:
 
 ```bash
-gworkspace auth logout
-gworkspace auth login
+gw auth logout
+gw auth login
 ```
 
 ## Troubleshooting

@@ -2,38 +2,38 @@
 
 ## Auth
 
-- `gworkspace auth login [--credentials <path>] [--no-open]`
-- `gworkspace auth status`
-- `gworkspace auth logout`
+- `gw auth login [--credentials <path>] [--no-open]`
+- `gw auth status`
+- `gw auth logout`
 
 ## Calendar
 
-- `gworkspace calendar list --from <ISO> --to <ISO> [--calendarId primary] [--max 20]`
-- Alias: `gworkspace calendar_getEvents --timeMin <ISO> --timeMax <ISO> [--calendarId primary] [--maxResults 20]`
+- `gw calendar list --from <ISO> --to <ISO> [--calendarId primary] [--max 20]`
+- Alias: `gw calendar_getEvents --timeMin <ISO> --timeMax <ISO> [--calendarId primary] [--maxResults 20]`
 
 ## Gmail
 
-- `gworkspace gmail search --query "<gmail_query>" [--max 20] [--pageToken <token>]`
-- `gworkspace gmail get --id <message_id>`
-- Alias: `gworkspace gmail_search --query "<gmail_query>" [--max 20]`
+- `gw gmail search --query "<gmail_query>" [--max 20] [--pageToken <token>]`
+- `gw gmail get --id <message_id>`
+- Alias: `gw gmail_search --query "<gmail_query>" [--max 20]`
 
 ## Drive
 
-- `gworkspace drive search --query "<drive_query>" [--max 20]`
-- `gworkspace drive recent [--max 20]`
-- `gworkspace drive get --id <file_id>`
-- Alias: `gworkspace drive_search --query "<drive_query>" [--max 20]`
+- `gw drive search --query "<drive_query>" [--max 20]`
+- `gw drive recent [--max 20]`
+- `gw drive get --id <file_id>`
+- Alias: `gw drive_search --query "<drive_query>" [--max 20]`
 
 ## Chat
 
-- `gworkspace chat spaces [--max 20] [--filter "spaceType = SPACE"] [--pageToken <token>]`
-- `gworkspace chat messages --space spaces/<space_id> [--max 20] [--orderBy "createTime desc"] [--pageToken <token>]`
+- `gw chat spaces [--max 20] [--filter "spaceType = SPACE"] [--pageToken <token>]`
+- `gw chat messages --space spaces/<space_id> [--max 20] [--orderBy "createTime desc"] [--pageToken <token>]`
 
 ## Time
 
-- `gworkspace time now`
-- `gworkspace time date`
-- `gworkspace time zone`
+- `gw time now`
+- `gw time date`
+- `gw time zone`
 
 ## Query examples
 

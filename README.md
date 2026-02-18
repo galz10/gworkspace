@@ -1,6 +1,6 @@
-# gworkspace
+# gw
 
-`gworkspace` is a native Google Workspace CLI with Workspace MCP-like capabilities, but no MCP runtime in the middle.
+`gw` is a native Google Workspace CLI with Workspace MCP-like capabilities, but no MCP runtime in the middle.
 It is built for direct execution: less ceremony, more signal.
 
 ## What it does
@@ -22,9 +22,9 @@ It is built for direct execution: less ceremony, more signal.
    - set `GOOGLE_OAUTH_CREDENTIALS`.
 
 ```bash
-gworkspace auth login
-gworkspace auth status
-gworkspace time now
+gw auth login
+gw auth status
+gw time now
 ```
 
 `auth login` opens your browser, waits for OAuth callback on localhost, then stores token at `~/.config/gworkspace/token.json`.
@@ -43,7 +43,7 @@ node dist/index.js --help
 
 ```bash
 bun install -g .
-gworkspace --help
+gw --help
 ```
 
 ## Common workflows
@@ -51,65 +51,65 @@ gworkspace --help
 ### Morning context pull
 
 ```bash
-gworkspace time now
-gworkspace calendar list --from 2026-02-18T00:00:00Z --to 2026-02-18T23:59:59Z
-gworkspace gmail search --query "newer_than:1d" --max 20
+gw time now
+gw calendar list --from 2026-02-18T00:00:00Z --to 2026-02-18T23:59:59Z
+gw gmail search --query "newer_than:1d" --max 20
 ```
 
 ### Project document scan
 
 ```bash
-gworkspace drive search --query "name contains 'spec' and trashed = false"
-gworkspace drive get --id <fileId>
+gw drive search --query "name contains 'spec' and trashed = false"
+gw drive get --id <fileId>
 ```
 
 ### Message triage
 
 ```bash
-gworkspace gmail search --query "is:unread newer_than:7d" --max 25
-gworkspace gmail get --id <messageId>
+gw gmail search --query "is:unread newer_than:7d" --max 25
+gw gmail get --id <messageId>
 ```
 
 ## Command surface
 
 ### Auth
 
-- `gworkspace auth login [--credentials path/to/credentials.json] [--no-open]`
-- `gworkspace auth status`
-- `gworkspace auth logout`
+- `gw auth login [--credentials path/to/credentials.json] [--no-open]`
+- `gw auth status`
+- `gw auth logout`
 
 ### Calendar
 
-- `gworkspace calendar list --from <ISO> --to <ISO> [--calendarId primary] [--max 20]`
+- `gw calendar list --from <ISO> --to <ISO> [--calendarId primary] [--max 20]`
 
 ### Gmail
 
-- `gworkspace gmail search --query "<gmail query>" [--max 20] [--pageToken <token>]`
-- `gworkspace gmail get --id <messageId>`
+- `gw gmail search --query "<gmail query>" [--max 20] [--pageToken <token>]`
+- `gw gmail get --id <messageId>`
 
 ### Drive
 
-- `gworkspace drive search --query "<drive query>" [--max 20]`
-- `gworkspace drive recent [--max 20]`
-- `gworkspace drive get --id <fileId>`
+- `gw drive search --query "<drive query>" [--max 20]`
+- `gw drive recent [--max 20]`
+- `gw drive get --id <fileId>`
 
 ### Time
 
-- `gworkspace time now`
-- `gworkspace time date`
-- `gworkspace time zone`
+- `gw time now`
+- `gw time date`
+- `gw time zone`
 
 ### Chat
 
-- `gworkspace chat spaces [--max 20] [--filter "spaceType = SPACE"] [--pageToken <token>]`
-- `gworkspace chat messages --space spaces/<spaceId> [--max 20] [--orderBy "createTime desc"] [--pageToken <token>]`
+- `gw chat spaces [--max 20] [--filter "spaceType = SPACE"] [--pageToken <token>]`
+- `gw chat messages --space spaces/<spaceId> [--max 20] [--orderBy "createTime desc"] [--pageToken <token>]`
 
 ## Workspace-style aliases (compat)
 
 ```bash
-gworkspace calendar_getEvents --timeMin 2026-02-18T00:00:00Z --timeMax 2026-02-19T00:00:00Z
-gworkspace gmail_search --query "newer_than:7d" --max 20
-gworkspace drive_search --query "trashed = false" --max 20
+gw calendar_getEvents --timeMin 2026-02-18T00:00:00Z --timeMax 2026-02-19T00:00:00Z
+gw gmail_search --query "newer_than:7d" --max 20
+gw drive_search --query "trashed = false" --max 20
 ```
 
 ## Security notes
@@ -121,18 +121,18 @@ gworkspace drive_search --query "trashed = false" --max 20
   - `drive.readonly`
   - `chat.spaces.readonly`
   - `chat.messages.readonly`
-- If you rotate credentials, run `gworkspace auth logout` then `gworkspace auth login`.
+- If you rotate credentials, run `gw auth logout` then `gw auth login`.
 
 ## Troubleshooting
 
 - `Credentials file not found`
   - Check `~/.config/gworkspace/credentials.json` or pass `--credentials`.
 - Browser did not open
-  - Run `gworkspace auth login --no-open` and open the URL manually.
+  - Run `gw auth login --no-open` and open the URL manually.
 - Login timeout
   - Re-run login and complete consent in the browser within the timeout window.
 - `No token found`
-  - Run `gworkspace auth login` first.
+  - Run `gw auth login` first.
 
 ## Docs
 
