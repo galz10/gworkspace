@@ -1,22 +1,41 @@
 # gworkspace
 
-Bun + TypeScript CLI that is a 1:1 wrapper over the Workspace MCP server tool surface.
+Native Google Workspace CLI (no MCP protocol).
+
+## Auth setup
+
+1. Create a Desktop OAuth client in Google Cloud.
+2. Save credentials JSON to:
+   - `~/.config/gworkspace/credentials.json` (default), or
+   - pass `--credentials /path/to/credentials.json`, or
+   - set `GOOGLE_OAUTH_CREDENTIALS`.
+
+Then run:
+
+```bash
+gworkspace auth login
+gworkspace auth status
+```
 
 ## Commands
 
 ```bash
-gworkspace tools list
-gworkspace tools call --name time_getCurrentTime
-gworkspace time_getCurrentTime
-gworkspace calendar_getEvents --args '{"timeMin":"2026-02-18T00:00:00Z","timeMax":"2026-02-19T00:00:00Z"}'
+gworkspace calendar list --from 2026-02-18T00:00:00Z --to 2026-02-19T00:00:00Z --max 20
+gworkspace gmail search --query "newer_than:7d" --max 20
+gworkspace gmail get --id <messageId>
+gworkspace drive recent --max 20
+gworkspace drive search --query "name contains 'spec' and trashed = false"
+gworkspace drive get --id <fileId>
+gworkspace time now
 ```
 
-## Server resolution order
+## Workspace-style aliases
 
-1. `--server-cmd` and optional `--server-args`
-2. `GWORKSPACE_SERVER_CMD` and optional `GWORKSPACE_SERVER_ARGS`
-3. `~/Documents/Github/workspace/workspace-server/dist/index.js`
-4. `gemini-workspace-server` in `PATH`
+```bash
+gworkspace calendar_getEvents --timeMin 2026-02-18T00:00:00Z --timeMax 2026-02-19T00:00:00Z
+gworkspace gmail_search --query "newer_than:7d" --max 20
+gworkspace drive_search --query "trashed = false" --max 20
+```
 
 ## Development
 
