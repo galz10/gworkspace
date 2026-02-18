@@ -10,18 +10,20 @@
 
 ## Auth
 
-- `gw auth login [--auth-mode mcp|local] [--credentials <path>] [--no-open]`
+- `gw auth login [--credentials <path>] [--no-open]`
 - `gw auth status`
 - `gw auth logout`
 
 ## Calendar
 
 - `gw calendar list --from <ISO> --to <ISO> [--calendarId primary] [--max 20]`
+- `gw calendar list today [--calendarId primary] [--max 20]`
 - Alias: `gw calendar_getEvents --timeMin <ISO> --timeMax <ISO> [--calendarId primary] [--maxResults 20]`
 
 ## Gmail
 
 - `gw gmail search --query "<gmail_query>" [--max 20] [--pageToken <token>]`
+- `gw gmail list today [--max 20]`
 - `gw gmail get --id <message_id>`
 - Alias: `gw gmail_search --query "<gmail_query>" [--max 20]`
 
@@ -36,6 +38,7 @@
 
 - `gw chat spaces [--max 20] [--filter "spaceType = SPACE"] [--pageToken <token>]`
 - `gw chat messages --space spaces/<space_id> [--max 20] [--orderBy "createTime desc"] [--pageToken <token>]`
+- `gw chat list today --space spaces/<space_id> [--max 20]`
 
 ## Time
 

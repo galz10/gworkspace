@@ -3,13 +3,23 @@ import { optNumber, optString } from '../lib/args.js';
 import { output } from '../lib/io.js';
 import type { AnyRecord, Options } from '../lib/types.js';
 
+function getTodayRangeIso() {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  const end = new Date(start);
+  end.setDate(end.getDate() + 1);
+  return { start: start.toISOString(), end: end.toISOString() };
+}
+
 export async function commandCalendarList(auth: any, options: Options) {
   const calendar = google.calendar({ version: 'v3', auth });
+  const fromOption = optString(options, 'from');
+  const toOption = optString(options, 'to');
+  const useToday = options.today === true;
+  const todayRange = getTodayRangeIso();
   const now = new Date();
-  const from = optString(options, 'from') || now.toISOString();
-  const to =
-    optString(options, 'to') ||
-    new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
+  const from = fromOption || (useToday ? todayRange.start : now.toISOString());
+  const to = toOption || (useToday ? todayRange.end : new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString());
   const max = Math.max(1, Math.min(optNumber(options, 'max', 20), 250));
 
   const res = await calendar.events.list({
@@ -25,6 +35,7 @@ export async function commandCalendarList(auth: any, options: Options) {
   output({
     ok: true,
     action: 'calendar.list',
+    today: useToday,
     from,
     to,
     count: items.length,

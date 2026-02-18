@@ -3,13 +3,31 @@ import { optNumber, optString } from '../lib/args.js';
 import { fail, output } from '../lib/io.js';
 import type { AnyRecord, Options } from '../lib/types.js';
 
+function formatGmailDate(d: Date): string {
+  const year = d.getFullYear();
+  const month = `${d.getMonth() + 1}`.padStart(2, '0');
+  const day = `${d.getDate()}`.padStart(2, '0');
+  return `${year}/${month}/${day}`;
+}
+
+function getTodayGmailQuery(): string {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  const end = new Date(start);
+  end.setDate(end.getDate() + 1);
+  return `after:${formatGmailDate(start)} before:${formatGmailDate(end)}`;
+}
+
 export async function commandGmailSearch(auth: any, options: Options) {
   const gmail = google.gmail({ version: 'v1', auth });
   const max = Math.max(1, Math.min(optNumber(options, 'max', 20), 100));
+  const baseQuery = optString(options, 'query') || '';
+  const useToday = options.today === true;
+  const query = useToday ? `${baseQuery} ${getTodayGmailQuery()}`.trim() : baseQuery;
 
   const res = await gmail.users.messages.list({
     userId: 'me',
-    q: optString(options, 'query') || '',
+    q: query,
     maxResults: max,
     pageToken: optString(options, 'pageToken'),
   });
@@ -18,7 +36,8 @@ export async function commandGmailSearch(auth: any, options: Options) {
   output({
     ok: true,
     action: 'gmail.search',
-    query: optString(options, 'query') || '',
+    today: useToday,
+    query,
     count: messages.length,
     nextPageToken: res.data.nextPageToken || null,
     messages: messages.map((m: AnyRecord) => ({ id: m.id, threadId: m.threadId })),

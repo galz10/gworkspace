@@ -1,6 +1,6 @@
 # Auth Flow
 
-`gw auth login` defaults to MCP mode and uses a browser OAuth loop:
+`gw auth login` uses a browser OAuth loop with Google Desktop OAuth credentials:
 
 1. Start a localhost callback server on a random free port.
 2. Generate Google OAuth URL with the configured scopes.
@@ -8,20 +8,15 @@
 4. Receive callback at `/oauth2callback`.
 5. Exchange auth code for tokens and store token JSON.
 
-## Modes
-
-- `mcp` (default): no local credentials file required; uses Workspace MCP cloud-function exchange.
-- `local`: requires Desktop OAuth credentials JSON and performs direct local token exchange.
-
 ## Files
 
 - Credentials: `~/.config/gworkspace/credentials.json` (default)
 - Token: `~/.config/gworkspace/token.json`
 
-Use local mode with explicit credentials path:
+Use an explicit credentials path:
 
 ```bash
-gw auth login --auth-mode local --credentials /path/to/credentials.json
+gw auth login --credentials /path/to/credentials.json
 ```
 
 Or env var:
@@ -32,9 +27,17 @@ export GOOGLE_OAUTH_CREDENTIALS=/path/to/credentials.json
 
 ## Flags
 
-- `--auth-mode`: `mcp` (default) or `local`.
 - `--no-open`: prints/uses auth URL without auto-launching browser.
-- `--credentials`: explicit credentials file path (used in `local` mode).
+- `--credentials`: explicit Desktop OAuth credentials file path.
+
+## Create Credentials (Google Cloud Console)
+
+1. Open Google Cloud Console, select or create a project.
+2. Enable APIs you need: Calendar, Gmail, Drive, Google Chat.
+3. Configure OAuth consent screen.
+4. Go to Credentials -> Create Credentials -> OAuth client ID.
+5. Select Application type `Desktop app`.
+6. Download the JSON and save it as `~/.config/gworkspace/credentials.json`.
 
 ## Scope updates
 
@@ -48,6 +51,6 @@ gw auth login
 
 ## Troubleshooting
 
-- `Credentials file not found`: use `--auth-mode local` only when file exists.
+- `Credentials file not found`: create/download Desktop OAuth credentials and pass `--credentials`, or place the file at `~/.config/gworkspace/credentials.json`.
 - `Invalid credentials file`: use Desktop OAuth client JSON with `installed` or `web` payload.
 - `Authentication timed out`: reopen login and complete consent in browser within 5 minutes.

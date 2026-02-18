@@ -1,6 +1,6 @@
 # gw
 
-`gw` is a native Google Workspace CLI with Workspace MCP-like capabilities, but no MCP runtime in the middle.
+`gw` is a native Google Workspace CLI with direct Google API access.
 It is built for direct execution: less ceremony, more signal.
 
 ## What it does
@@ -15,10 +15,9 @@ It is built for direct execution: less ceremony, more signal.
 
 ## Quick start
 
-1. Default auth mode is `mcp` (no local credentials file required).
-2. Optional local auth mode:
-   - create a Google Cloud **Desktop OAuth client**,
-   - save JSON to `~/.config/gworkspace/credentials.json`, or pass `--credentials`.
+1. Create a Google Cloud **Desktop OAuth client**.
+2. Download the OAuth client JSON.
+3. Save it to `~/.config/gworkspace/credentials.json` (or pass `--credentials`).
 
 ```bash
 gw auth login
@@ -83,17 +82,19 @@ gw gmail get --id <messageId>
 
 ### Auth
 
-- `gw auth login [--auth-mode mcp|local] [--credentials path/to/credentials.json] [--no-open]`
+- `gw auth login [--credentials path/to/credentials.json] [--no-open]`
 - `gw auth status`
 - `gw auth logout`
 
 ### Calendar
 
 - `gw calendar list --from <ISO> --to <ISO> [--calendarId primary] [--max 20]`
+- `gw calendar list today [--calendarId primary] [--max 20]`
 
 ### Gmail
 
 - `gw gmail search --query "<gmail query>" [--max 20] [--pageToken <token>]`
+- `gw gmail list today [--max 20]`
 - `gw gmail get --id <messageId>`
 
 ### Drive
@@ -112,6 +113,7 @@ gw gmail get --id <messageId>
 
 - `gw chat spaces [--max 20] [--filter "spaceType = SPACE"] [--pageToken <token>]`
 - `gw chat messages --space spaces/<spaceId> [--max 20] [--orderBy "createTime desc"] [--pageToken <token>]`
+- `gw chat list today --space spaces/<spaceId> [--max 20]`
 
 ## Workspace-style aliases (compat)
 
@@ -124,7 +126,7 @@ gw drive_search --query "trashed = false" --max 20
 ## Security notes
 
 - OAuth tokens are stored locally, not committed by default.
-- Default mode is `mcp`; local mode uses credentials JSON.
+- Uses Desktop OAuth credentials JSON for browser login.
 - Scopes are read-only:
   - `calendar.readonly`
   - `gmail.readonly`
@@ -136,7 +138,7 @@ gw drive_search --query "trashed = false" --max 20
 ## Troubleshooting
 
 - `Credentials file not found`
-  - Run with `--auth-mode mcp`, or provide local credentials via `--auth-mode local --credentials ...`.
+  - Create/download Desktop OAuth credentials and pass `--credentials /path/to/credentials.json`, or place it at `~/.config/gworkspace/credentials.json`.
 - Browser did not open
   - Run `gw auth login --no-open` and open the URL manually.
 - Login timeout
