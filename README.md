@@ -15,11 +15,10 @@ It is built for direct execution: less ceremony, more signal.
 
 ## Quick start
 
-1. Create a Google Cloud **Desktop OAuth client**.
-2. Save credentials JSON to:
-   - `~/.config/gworkspace/credentials.json` (default), or
-   - pass `--credentials /path/to/credentials.json`, or
-   - set `GOOGLE_OAUTH_CREDENTIALS`.
+1. Default auth mode is `mcp` (no local credentials file required).
+2. Optional local auth mode:
+   - create a Google Cloud **Desktop OAuth client**,
+   - save JSON to `~/.config/gworkspace/credentials.json`, or pass `--credentials`.
 
 ```bash
 gw auth login
@@ -84,7 +83,7 @@ gw gmail get --id <messageId>
 
 ### Auth
 
-- `gw auth login [--credentials path/to/credentials.json] [--no-open]`
+- `gw auth login [--auth-mode mcp|local] [--credentials path/to/credentials.json] [--no-open]`
 - `gw auth status`
 - `gw auth logout`
 
@@ -124,7 +123,8 @@ gw drive_search --query "trashed = false" --max 20
 
 ## Security notes
 
-- OAuth credentials and tokens are stored locally, not committed by default.
+- OAuth tokens are stored locally, not committed by default.
+- Default mode is `mcp`; local mode uses credentials JSON.
 - Scopes are read-only:
   - `calendar.readonly`
   - `gmail.readonly`
@@ -136,7 +136,7 @@ gw drive_search --query "trashed = false" --max 20
 ## Troubleshooting
 
 - `Credentials file not found`
-  - Check `~/.config/gworkspace/credentials.json` or pass `--credentials`.
+  - Run with `--auth-mode mcp`, or provide local credentials via `--auth-mode local --credentials ...`.
 - Browser did not open
   - Run `gw auth login --no-open` and open the URL manually.
 - Login timeout

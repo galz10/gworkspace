@@ -10,7 +10,7 @@
 
 ## Auth
 
-- `gw auth login [--credentials <path>] [--no-open]`
+- `gw auth login [--auth-mode mcp|local] [--credentials <path>] [--no-open]`
 - `gw auth status`
 - `gw auth logout`
 

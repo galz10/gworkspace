@@ -1,9 +1,9 @@
-import { CREDENTIALS_PATH, TOKEN_PATH } from './config.js';
+import { CREDENTIALS_PATH, DEFAULT_AUTH_MODE, TOKEN_PATH } from './config.js';
 import { output } from './lib/io.js';
 
 const HELP: Record<string, string[]> = {
   auth: [
-    'gw auth login [--credentials path/to/credentials.json] [--no-open]',
+    'gw auth login [--auth-mode mcp|local] [--credentials path/to/credentials.json] [--no-open]',
     'gw auth status',
     'gw auth logout',
   ],
@@ -56,6 +56,7 @@ export function usage(topic?: string): never {
     commands,
     domains: Object.keys(HELP),
     config: {
+      defaultAuthMode: DEFAULT_AUTH_MODE,
       credentialsPath: CREDENTIALS_PATH,
       tokenPath: TOKEN_PATH,
     },

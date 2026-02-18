@@ -4,7 +4,7 @@ import {
   commandAuthLogout,
   commandAuthStatus,
 } from './auth/index.js';
-import { resolveCredentialsPath } from './config.js';
+import { resolveAuthMode, resolveCredentialsPath } from './config.js';
 import { commandCalendarList } from './commands/calendar.js';
 import { commandChatMessages, commandChatSpaces } from './commands/chat.js';
 import { commandDriveGet, commandDriveRecent, commandDriveSearch } from './commands/drive.js';
@@ -37,7 +37,7 @@ export async function runCli(argv: string[]) {
 
   const alias = domain;
   if (alias === 'calendar_getEvents') {
-    const auth = await authorize(resolveCredentialsPath(options));
+    const auth = await authorize(resolveCredentialsPath(options), resolveAuthMode(options));
     const patched: Options = {
       ...options,
       from: optString(options, 'timeMin') || optString(options, 'from') || true,
@@ -48,52 +48,52 @@ export async function runCli(argv: string[]) {
   }
 
   if (alias === 'gmail_search') {
-    const auth = await authorize(resolveCredentialsPath(options));
+    const auth = await authorize(resolveCredentialsPath(options), resolveAuthMode(options));
     await commandGmailSearch(auth, options);
   }
 
   if (alias === 'drive_search') {
-    const auth = await authorize(resolveCredentialsPath(options));
+    const auth = await authorize(resolveCredentialsPath(options), resolveAuthMode(options));
     await commandDriveSearch(auth, options);
   }
 
   if (domain === 'calendar' && command === 'list') {
-    const auth = await authorize(resolveCredentialsPath(options));
+    const auth = await authorize(resolveCredentialsPath(options), resolveAuthMode(options));
     await commandCalendarList(auth, options);
   }
 
   if (domain === 'gmail' && command === 'search') {
-    const auth = await authorize(resolveCredentialsPath(options));
+    const auth = await authorize(resolveCredentialsPath(options), resolveAuthMode(options));
     await commandGmailSearch(auth, options);
   }
 
   if (domain === 'gmail' && command === 'get') {
-    const auth = await authorize(resolveCredentialsPath(options));
+    const auth = await authorize(resolveCredentialsPath(options), resolveAuthMode(options));
     await commandGmailGet(auth, options);
   }
 
   if (domain === 'drive' && command === 'search') {
-    const auth = await authorize(resolveCredentialsPath(options));
+    const auth = await authorize(resolveCredentialsPath(options), resolveAuthMode(options));
     await commandDriveSearch(auth, options);
   }
 
   if (domain === 'drive' && command === 'recent') {
-    const auth = await authorize(resolveCredentialsPath(options));
+    const auth = await authorize(resolveCredentialsPath(options), resolveAuthMode(options));
     await commandDriveRecent(auth, options);
   }
 
   if (domain === 'drive' && command === 'get') {
-    const auth = await authorize(resolveCredentialsPath(options));
+    const auth = await authorize(resolveCredentialsPath(options), resolveAuthMode(options));
     await commandDriveGet(auth, options);
   }
 
   if (domain === 'chat' && command === 'spaces') {
-    const auth = await authorize(resolveCredentialsPath(options));
+    const auth = await authorize(resolveCredentialsPath(options), resolveAuthMode(options));
     await commandChatSpaces(auth, options);
   }
 
   if (domain === 'chat' && command === 'messages') {
-    const auth = await authorize(resolveCredentialsPath(options));
+    const auth = await authorize(resolveCredentialsPath(options), resolveAuthMode(options));
     await commandChatMessages(auth, options);
   }
 
