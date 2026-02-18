@@ -18,8 +18,14 @@ import { usage } from './usage.js';
 export async function runCli(argv: string[]) {
   const { positional, options } = parseArgs(argv);
   const [domain, command] = positional;
+  const helpRequested = options.help === true || options.h === true;
 
-  if (!domain || options.help || options.h) usage();
+  if (!domain) usage();
+  if (domain === 'help') usage(command);
+  if (helpRequested) usage(domain);
+  if (!command && ['auth', 'calendar', 'gmail', 'drive', 'chat', 'time'].includes(domain)) {
+    usage(domain);
+  }
 
   if (domain === 'auth' && command === 'status') commandAuthStatus();
   if (domain === 'auth' && command === 'login') await commandAuthLogin(options);

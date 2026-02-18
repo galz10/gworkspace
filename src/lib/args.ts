@@ -21,6 +21,17 @@ export function parseArgs(argv: string[]) {
     const token = argv[i];
     if (!token) continue;
 
+    if (token === '--') {
+      positional.push(...argv.slice(i + 1));
+      break;
+    }
+
+    if (token === '-h') {
+      setOpt('help', true);
+      setOpt('h', true);
+      continue;
+    }
+
     if (!token.startsWith('--')) {
       positional.push(token);
       continue;

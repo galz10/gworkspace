@@ -1,5 +1,13 @@
 # Command Reference
 
+## Help
+
+- `gw --help`
+- `gw -h`
+- `gw help`
+- `gw help <domain>`
+- `gw <domain> --help`
+
 ## Auth
 
 - `gw auth login [--credentials <path>] [--no-open]`

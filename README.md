@@ -46,6 +46,16 @@ bun install -g .
 gw --help
 ```
 
+### Help
+
+```bash
+gw --help
+gw -h
+gw help
+gw help auth
+gw auth --help
+```
+
 ## Common workflows
 
 ### Morning context pull
