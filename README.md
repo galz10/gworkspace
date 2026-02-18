@@ -1,15 +1,22 @@
 # gworkspace
 
-Bun + TypeScript CLI scaffold for Google Workspace context access.
+Bun + TypeScript CLI that is a 1:1 wrapper over the Workspace MCP server tool surface.
 
 ## Commands
 
 ```bash
-gworkspace auth status
-gworkspace calendar list --from 2026-02-18T00:00:00Z --to 2026-02-19T00:00:00Z --max 20
-gworkspace gmail search --query "newer_than:7d" --max 20
-gworkspace drive recent --max 20
+gworkspace tools list
+gworkspace tools call --name time_getCurrentTime
+gworkspace time_getCurrentTime
+gworkspace calendar_getEvents --args '{"timeMin":"2026-02-18T00:00:00Z","timeMax":"2026-02-19T00:00:00Z"}'
 ```
+
+## Server resolution order
+
+1. `--server-cmd` and optional `--server-args`
+2. `GWORKSPACE_SERVER_CMD` and optional `GWORKSPACE_SERVER_ARGS`
+3. `~/Documents/Github/workspace/workspace-server/dist/index.js`
+4. `gemini-workspace-server` in `PATH`
 
 ## Development
 
@@ -17,5 +24,5 @@ gworkspace drive recent --max 20
 bun install
 bun run check
 bun run build
-bun run src/index.ts --help
+node dist/index.js --help
 ```
