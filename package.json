@@ -1,7 +1,11 @@
 {
   "name": "gworkspace",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Native Google Workspace CLI (no MCP)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/galz10/gworkspace.git"
+  },
   "type": "module",
   "bin": {
     "gw": "dist/index.js",
