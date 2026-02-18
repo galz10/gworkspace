@@ -43,6 +43,29 @@ gworkspace drive_search --query "trashed = false" --max 20
 - `docs/auth.md` - OAuth browser flow, token storage, and troubleshooting.
 - `docs/commands.md` - full command reference and examples.
 
+## Repo layout
+
+```text
+src/
+  index.ts            # tiny entrypoint
+  cli.ts              # command routing
+  usage.ts            # help output
+  config.ts           # paths + scopes
+  auth/
+    index.ts          # auth commands + authorize()
+    oauth.ts          # browser OAuth flow
+    token.ts          # token read/write/delete
+  commands/
+    calendar.ts
+    gmail.ts
+    drive.ts
+    time.ts
+  lib/
+    args.ts           # argv parsing helpers
+    io.ts             # JSON output + fail handling
+    types.ts          # shared types
+```
+
 ## Development
 
 ```bash
