@@ -7,6 +7,10 @@ import { createOAuthClient, runBrowserOAuthFlow } from './oauth.js';
 import { clearToken, loadSavedToken, saveToken } from './token.js';
 
 export async function authorize(credentialsPath: string): Promise<OAuth2Client> {
+  if (!fs.existsSync(credentialsPath)) {
+    fail('Credentials file not found.', { credentialsPath });
+  }
+
   const oauth = createOAuthClient(credentialsPath, 0);
   const token = loadSavedToken();
   if (token) {

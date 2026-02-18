@@ -30,6 +30,16 @@ export GOOGLE_OAUTH_CREDENTIALS=/path/to/credentials.json
 - `--no-open`: prints/uses auth URL without auto-launching browser.
 - `--credentials`: explicit credentials file path.
 
+## Scope updates
+
+If new scopes are added (for example Chat read-only scopes), your existing token may not include them.
+Run:
+
+```bash
+gworkspace auth logout
+gworkspace auth login
+```
+
 ## Troubleshooting
 
 - `Credentials file not found`: verify file exists and path is correct.

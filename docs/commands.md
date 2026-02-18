@@ -24,6 +24,11 @@
 - `gworkspace drive get --id <file_id>`
 - Alias: `gworkspace drive_search --query "<drive_query>" [--max 20]`
 
+## Chat
+
+- `gworkspace chat spaces [--max 20] [--filter "spaceType = SPACE"] [--pageToken <token>]`
+- `gworkspace chat messages --space spaces/<space_id> [--max 20] [--orderBy "createTime desc"] [--pageToken <token>]`
+
 ## Time
 
 - `gworkspace time now`

@@ -16,6 +16,8 @@ export function usage(): never {
       'gworkspace drive search --query "trashed = false" [--max 20]',
       'gworkspace drive recent [--max 20]',
       'gworkspace drive get --id <fileId>',
+      'gworkspace chat spaces [--max 20] [--filter "spaceType = SPACE"]',
+      'gworkspace chat messages --space spaces/<spaceId> [--max 20]',
       'gworkspace time now',
       'gworkspace time date',
       'gworkspace time zone',

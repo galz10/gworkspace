@@ -6,6 +6,7 @@ import {
 } from './auth/index.js';
 import { resolveCredentialsPath } from './config.js';
 import { commandCalendarList } from './commands/calendar.js';
+import { commandChatMessages, commandChatSpaces } from './commands/chat.js';
 import { commandDriveGet, commandDriveRecent, commandDriveSearch } from './commands/drive.js';
 import { commandGmailGet, commandGmailSearch } from './commands/gmail.js';
 import { commandTimeDate, commandTimeNow, commandTimeZone } from './commands/time.js';
@@ -78,6 +79,16 @@ export async function runCli(argv: string[]) {
   if (domain === 'drive' && command === 'get') {
     const auth = await authorize(resolveCredentialsPath(options));
     await commandDriveGet(auth, options);
+  }
+
+  if (domain === 'chat' && command === 'spaces') {
+    const auth = await authorize(resolveCredentialsPath(options));
+    await commandChatSpaces(auth, options);
+  }
+
+  if (domain === 'chat' && command === 'messages') {
+    const auth = await authorize(resolveCredentialsPath(options));
+    await commandChatMessages(auth, options);
   }
 
   fail(`Unknown command: ${[domain, command].filter(Boolean).join(' ')}`);

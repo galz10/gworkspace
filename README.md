@@ -9,6 +9,7 @@ It is built for direct execution: less ceremony, more signal.
 - Calendar read access (event listing)
 - Gmail read access (search + metadata fetch)
 - Drive read access (search + recent + file metadata)
+- Google Chat read access (spaces + messages)
 - Time utilities for reliable local/UTC context
 - Compatibility aliases for Workspace-style command names
 
@@ -98,6 +99,11 @@ gworkspace gmail get --id <messageId>
 - `gworkspace time date`
 - `gworkspace time zone`
 
+### Chat
+
+- `gworkspace chat spaces [--max 20] [--filter "spaceType = SPACE"] [--pageToken <token>]`
+- `gworkspace chat messages --space spaces/<spaceId> [--max 20] [--orderBy "createTime desc"] [--pageToken <token>]`
+
 ## Workspace-style aliases (compat)
 
 ```bash
@@ -113,6 +119,8 @@ gworkspace drive_search --query "trashed = false" --max 20
   - `calendar.readonly`
   - `gmail.readonly`
   - `drive.readonly`
+  - `chat.spaces.readonly`
+  - `chat.messages.readonly`
 - If you rotate credentials, run `gworkspace auth logout` then `gworkspace auth login`.
 
 ## Troubleshooting
@@ -147,6 +155,7 @@ src/
     calendar.ts
     gmail.ts
     drive.ts
+    chat.ts
     time.ts
   lib/
     args.ts           # argv parsing helpers
