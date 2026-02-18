@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 
 import fs from 'node:fs';
+import http from 'node:http';
+import net from 'node:net';
 import os from 'node:os';
 import path from 'node:path';
-import { authenticate } from '@google-cloud/local-auth';
+import { URL } from 'node:url';
 import { google } from 'googleapis';
+import open from 'open';
 
 type Primitive = string | boolean;
 type OptValue = Primitive | Primitive[];
@@ -122,20 +125,16 @@ function saveToken(credentials: unknown) {
 }
 
 async function authorize(credentialsPath: string) {
-  const oauth = new google.auth.OAuth2();
+  const oauth = createOAuthClient(credentialsPath, 0);
   const token = loadSavedToken();
   if (token) {
     oauth.setCredentials(token);
     return oauth;
   }
-
-  ensureConfigDir();
-  const authClient = await authenticate({
-    scopes: SCOPES,
-    keyfilePath: credentialsPath,
+  fail('No token found. Run `gworkspace auth login` first.', {
+    tokenPath: TOKEN_PATH,
+    credentialsPath,
   });
-  saveToken(authClient.credentials);
-  return authClient;
 }
 
 function usage(): never {
@@ -144,7 +143,7 @@ function usage(): never {
     name: 'gworkspace',
     description: 'Native Google Workspace CLI (no MCP protocol)',
     commands: [
-      'gworkspace auth login [--credentials path/to/credentials.json]',
+      'gworkspace auth login [--credentials path/to/credentials.json] [--no-open]',
       'gworkspace auth status',
       'gworkspace auth logout',
       'gworkspace calendar list --from <ISO> --to <ISO> [--calendarId primary] [--max 20]',
@@ -183,16 +182,32 @@ async function commandAuthLogin(options: Options) {
   if (!fs.existsSync(credentialsPath)) {
     fail('Credentials file not found.', { credentialsPath });
   }
-  const authClient = await authenticate({
-    scopes: SCOPES,
-    keyfilePath: credentialsPath,
+
+  const noOpen = options['no-open'] === true;
+  const callbackPort = await getAvailablePort();
+  const oauth = createOAuthClient(credentialsPath, callbackPort);
+  const authUrl = oauth.generateAuthUrl({
+    access_type: 'offline',
+    scope: SCOPES,
+    prompt: 'consent',
   });
-  saveToken(authClient.credentials);
+
+  if (!noOpen) {
+    await open(authUrl);
+  }
+
+  const code = await waitForAuthCode(callbackPort, authUrl);
+  const tokenResponse = await oauth.getToken(code);
+  oauth.setCredentials(tokenResponse.tokens);
+  saveToken(oauth.credentials);
+
   output({
     ok: true,
     action: 'auth.login',
     credentialsPath,
     tokenPath: TOKEN_PATH,
+    browserOpened: !noOpen,
+    callbackPort,
     scopes: SCOPES,
   });
 }
@@ -459,3 +474,89 @@ main().catch((error: unknown) => {
   const msg = error instanceof Error ? error.message : String(error);
   fail('Command failed.', msg);
 });
+
+function getAvailablePort(): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const server = net.createServer();
+    server.listen(0, '127.0.0.1', () => {
+      const address = server.address();
+      if (!address || typeof address === 'string') {
+        server.close(() => reject(new Error('Could not allocate callback port.')));
+        return;
+      }
+      const { port } = address;
+      server.close((err) => {
+        if (err) reject(err);
+        else resolve(port);
+      });
+    });
+    server.on('error', reject);
+  });
+}
+
+function createOAuthClient(credentialsPath: string, port: number) {
+  const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
+  const payload = credentials.installed || credentials.web;
+  if (!payload?.client_id || !payload?.client_secret) {
+    fail('Invalid credentials file. Expected installed/web OAuth client JSON.');
+  }
+  const redirectUri = `http://127.0.0.1:${port}/oauth2callback`;
+  return new google.auth.OAuth2(
+    payload.client_id,
+    payload.client_secret,
+    redirectUri,
+  );
+}
+
+function waitForAuthCode(port: number, authUrl: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      reject(
+        new Error(
+          `Authentication timed out after 5 minutes. Open this URL manually: ${authUrl}`,
+        ),
+      );
+    }, 5 * 60 * 1000);
+
+    const server = http.createServer((req, res) => {
+      try {
+        if (!req.url) throw new Error('Missing callback URL.');
+        const parsed = new URL(req.url, `http://127.0.0.1:${port}`);
+        if (parsed.pathname !== '/oauth2callback') {
+          res.writeHead(404, { 'Content-Type': 'text/plain' });
+          res.end('Not found');
+          return;
+        }
+
+        const error = parsed.searchParams.get('error');
+        if (error) {
+          res.writeHead(400, { 'Content-Type': 'text/plain' });
+          res.end(`OAuth error: ${error}`);
+          throw new Error(`OAuth error: ${error}`);
+        }
+
+        const code = parsed.searchParams.get('code');
+        if (!code) {
+          res.writeHead(400, { 'Content-Type': 'text/plain' });
+          res.end('Missing code');
+          throw new Error('OAuth callback missing code parameter.');
+        }
+
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.end('Authentication successful. You can close this tab.');
+        clearTimeout(timeout);
+        server.close(() => resolve(code));
+      } catch (err) {
+        clearTimeout(timeout);
+        server.close(() => reject(err));
+      }
+    });
+
+    server.on('error', (err) => {
+      clearTimeout(timeout);
+      reject(err);
+    });
+
+    server.listen(port, '127.0.0.1');
+  });
+}
